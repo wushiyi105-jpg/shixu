@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shixu"
+version = "0.1.0"
+description = "CSV 时间序列异常检测：算法找点、模型解释、数字回头核验"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+shixu = "shixu.cli:main"
+
+[tool.setuptools]
+packages = ["shixu"]
