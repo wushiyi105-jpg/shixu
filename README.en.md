@@ -114,6 +114,53 @@ Start the Web UI:
 python -m shixu serve        # http://127.0.0.1:8770
 ```
 
+Run in Docker (the container uses the default port 8770):
+
+```bash
+docker build -t shixu .
+docker run -p 8770:8770 shixu
+```
+
+## 🤔 Why not just ask a general LLM
+
+A general model can look at a curve and say "something seems off here". Shixu adds the three things it cannot:
+
+1. **Algorithms decide the anomalies** — which date is off and by how much is computed locally with adjustable parameters and recomputable results; the same CSV produces the same list twice. A model looking at a chart gives an impression, not a reproducible list.
+2. **The model's numbers are checked** — the model explains why and what to check first, but every number it states is verified against the data and flagged when it does not match. That rule came from 31 false warnings, and the report shows which statements failed verification.
+3. **Data never leaves the machine** — CSVs, detections and reports stay local, so business series (DAU, orders, error rates) are not uploaded; a model call sends only the anomalous excerpt and a summary.
+4. **Reports work offline** — `--no-model` runs the algorithms alone, so an anomaly list and a basic report work without network; a model is needed only for the plain-language explanation.
+
+## 🎯 Use cases
+
+- **Reviewing a curve after a campaign**: drop in the DAU or orders CSV, get the list of anomalous dates first, then read the model's candidate causes (promotion, release, channel outage) and send the report to colleagues.
+- **Error rate suddenly climbing**: with a daily monitoring CSV, detect the deviating hours and get an ordered list of what to check, instead of scrolling logs from the start.
+- **Explaining data to a non-technical colleague**: algorithm findings and plain-language explanation in one Markdown report, readable without knowing what a threshold is.
+
+## 🗺 Roadmap
+
+- **Configurable detection**: thresholds, windows and seasonal switches as CLI flags and Web controls, no code edits.
+- **Joint judgement across metrics**: when DAU drops while error rate rises, merge them into one conclusion instead of two unrelated anomalies.
+- **Seasonal decomposition**: separate within-week swings from trend, so every Monday stops being an "anomaly".
+- **Report templates**: fixed layouts for daily and weekly reports that machines can parse.
+- **Read series directly from SQLite**: skip the CSV export step.
+
+## ❓ FAQ
+
+**Where do I get an API key?**
+The project ships without one. It defaults to Zhipu (`https://open.bigmodel.cn/api/paas/v4` with `glm-4.6`); DeepSeek or a local Ollama also work — see the comments in `.env.example`.
+
+**Where is data stored, and is it uploaded?**
+Imported series and detection results sit in a local database and reports are local files; a model call sends only the excerpt around anomalies plus statistical summaries.
+
+**Does it work without a key?**
+Yes, with `--no-model`: algorithms still run, the anomaly list and basic report still come out, only the "why this might be" paragraph is missing.
+
+**How do I switch models?**
+Change `LLM_BASE_URL`, `LLM_MODEL` and `LLM_API_KEY`; `--no-model` turns the model off for one run.
+
+**Why are some numbers flagged in the report?**
+Because the number the model stated has no matching value in the data. The flag is a reminder not to quote a derivation as a fact.
+
 ## Commands
 
 | Command | What it does |
