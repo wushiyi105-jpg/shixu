@@ -6,7 +6,7 @@ Drop in a CSV time series; it finds the anomalies, then asks the model to explai
 
 The algorithm handles "what is off", the model handles "why it might be, and what to check first", and then the program goes back and verifies every number the model said — anything that does not match the data gets flagged.
 
-![demo](assets/demo.gif)
+![usage](assets/demo.gif)
 
 ## What it actually does
 
