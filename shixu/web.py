@@ -10,7 +10,8 @@ import json
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from . import detect, explain, llm, series as S, store, svg
+from . import detect, explain, llm, store, svg
+from . import series as S
 
 PAGE = """<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">

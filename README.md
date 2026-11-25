@@ -1,6 +1,6 @@
 # 时序 shixu
 
-[![test](https://github.com/wushiyi105-jpg/shixu/workflows/test/badge.svg)](https://github.com/wushiyi105-jpg/shixu/actions) [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)]() [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![test](https://github.com/wushiyi105-jpg/shixu/workflows/test/badge.svg)](https://github.com/wushiyi105-jpg/shixu/actions) [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)]() [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![codecov](https://codecov.io/gh/wushiyi105-jpg/shixu/branch/main/graph/badge.svg)](https://codecov.io/gh/wushiyi105-jpg/shixu)
 
 一份 CSV 时间序列丢进去，它把异常点找出来，然后让模型说人话解释。
 
@@ -76,6 +76,21 @@
 改完同一批解释：**0 条假警告**。而故意写一句「大概涨了 30%」，仍然会被抓出来——30 不在允许集合里，也不是日期。
 
 单测里这几条都是硬的：`test_date_is_not_data` 逐个断言五种日期写法不报警，`test_fabricated_percent_caught` 断言「30%」必须被抓。
+
+## 数据流
+
+一条数据在这几个模块之间怎么走：
+
+```mermaid
+flowchart LR
+    A[CSV 时间序列] --> B[series.py<br/>读列 · 对齐日期]
+    B --> C[detect.py<br/>尖峰 / 台阶 / 断档 / 缺失]
+    C --> D[explain.py<br/>异常清单 + 统计摘要喂模型]
+    D --> E[llm.py<br/>给原因与排查动作]
+    E --> F{explain.py<br/>数字白名单核验}
+    F -->|对不上| G[标红：疑似编造]
+    F -->|对得上| H[svg.py / cli.py / web.py<br/>报告 + 折线图]
+```
 
 ## 快速开始
 

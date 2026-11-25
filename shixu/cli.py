@@ -6,7 +6,8 @@ import argparse
 import json
 import os
 
-from . import detect, explain, llm, series as S, store, svg
+from . import detect, explain, llm, store, svg
+from . import series as S
 
 KIND_LABEL = {"spike": "尖峰", "drop": "骤降", "shift": "台阶", "gap": "断档", "missing": "缺失"}
 LEVEL_LABEL = {"high": "高", "medium": "中", "low": "低"}
