@@ -1,5 +1,7 @@
 # 时序 shixu
 
+[![test](https://github.com/wushiyi105-jpg/shixu/workflows/test/badge.svg)](https://github.com/wushiyi105-jpg/shixu/actions)
+
 一份 CSV 时间序列丢进去，它把异常点找出来，然后让模型说人话解释。
 
 算法负责「哪里不对」，模型负责「可能是为什么、先查什么」，程序再回头核验模型嘴里的每个数字——对不上数据的，直接标出来。
