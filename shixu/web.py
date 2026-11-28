@@ -16,7 +16,7 @@ from . import series as S
 PAGE = """<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>时序 · 异常排查</title>
+<title>时序 · 缺数还是跳变</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#0b0f14;color:#c9d1d9;font:15px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
@@ -40,8 +40,75 @@ button.ghost{background:#21262d;color:#c9d1d9}
 .k{color:#8b949e;font-size:13px}
 .warn{color:#e3b341;font-size:13px}
 .empty{color:#8b949e}
+
+:root{--maxw:1080px;--bg:#eef1f1;--card:#fbfcfc;--ink:#242b2e;--text:#242b2e;--dim:#677176;--line:#cfd7da;--accent:#1f6e70;--muted:#677176}
+.wrap{max-width:1080px}
+body{background:#eef1f1;color:#242b2e;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+h1{color:#242b2e}
+header{max-width:1080px;margin:0 auto}
+input,textarea,select{background:#fff;color:#242b2e;border-color:#cfd7da;border-radius:2px}
+button:not(.ghost):not(.tab){background:#1f6e70;color:#fff;border-radius:2px}
+button.ghost{background:transparent!important;color:#1f6e70!important;border:1px solid #cfd7da!important}
+h2,h3{color:#1f6e70}
+pre{background:#fafaf6;color:#242b2e;border-color:#cfd7da}
+.item,.card{border-color:#cfd7da;background:#fbfcfc}
+.k,.empty,.hint{color:#677176}
+
+h1{font-size:clamp(31px,5vw,39px);line-height:1.26}
+.prod{display:block;font-size:11px;line-height:1.4;letter-spacing:.18em;font-weight:650;margin-bottom:8px;opacity:.72}
+.lede,.sub{max-width:62ch;line-height:1.75}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:16px auto 20px;border:1px solid var(--line);background:var(--line);max-width:var(--maxw)}
+.route span{padding:11px 13px;background:var(--card);font-size:12px;line-height:1.5}
+.route b{display:block;font-size:10px;letter-spacing:.1em;margin-bottom:3px;opacity:.66}
+button{min-height:46px}
+input,select{min-height:44px}
+pre{white-space:pre-wrap}
+@media(max-width:680px){
+  .wrap{padding:20px 16px 56px}
+  .route{grid-template-columns:1fr}
+  h1{font-size:30px!important}
+  .row>div{min-width:100%!important}
+  button{width:100%}
+}
+
+body{background:#eef1f1;color:#242b2e}
+header{display:block!important;max-width:1080px;margin:0 auto;padding:24px 20px 0;background:transparent;border:0}
+header h1{color:#242b2e;font-family:"Cascadia Mono",Consolas,"PingFang SC",monospace;font-size:38px;line-height:1.24;letter-spacing:-.03em}
+header .sub{display:block;color:#677176;font-size:14px;margin-top:6px}
+main{max-width:1080px;margin:0 auto;background:#fbfcfc;border-left:1px solid #cfd7da;border-right:1px solid #cfd7da;grid-template-columns:300px 1fr;min-height:calc(100vh - 150px)}
+aside{background:#f2f5f5;border-right:1px solid #cfd7da}
+section{background:#fbfcfc}
+input,textarea,select{background:#fff;color:#242b2e;border-color:#cbd5d8;border-radius:2px;font-family:"Cascadia Mono",Consolas,monospace;font-size:13px}
+input:focus,textarea:focus,select:focus{border-color:#1f6e70;box-shadow:0 0 0 2px #d6e4e4}
+button{background:#1f6e70;color:#fff;border-radius:2px}
+button:hover{background:#195b5d}
+pre{background:#f3f7f7;color:#242b2e;border-color:#cfd7da}
+.item,.card{border-color:#cfd7da;background:#fff}
+h2{color:#1f6e70}
+.empty,.k{color:#677176}
+
+
+/* mobile-32 */
+input[type=text],input[type=number],input[type=email]{background:#fff;color:#242b2e;border-color:#cfd7da}
+
+@media(max-width:760px){
+  main{grid-template-columns:1fr!important}
+  aside{border-right:0!important;border-bottom:1px solid #cfd7da;width:auto!important}
+  section{padding:16px!important}
+  .row{flex-wrap:wrap!important}
+  .row>div{min-width:100%!important}
+  h1{font-size:30px!important}
+  .route{grid-template-columns:1fr!important}
+  button{min-height:48px}
+  pre{overflow-x:auto}
+}
+
+/* mobile-height */
+@media(max-width:760px){main{min-height:auto!important}aside{min-height:0!important}}
 </style></head><body>
-<header><h1>时序</h1><span class="sub">算法找异常点，模型解释原因，数字必须对得上数据</span></header>
+<header><h1><span class="prod">时序</span>这段异常，是缺数还是跳变</h1><p class="lede">给盯业务指标的运营或数据同学：上传带时区和单位的数据，标出基线、异常段、缺失段和阈值；人工标误报后重跑，导出时间窗和证据。</p></header>
+  <div class="route" aria-label="任务步骤"><span><b>01</b>传带时区数据</span><span><b>02</b>分缺失与跳变</span><span><b>03</b>导出异常时间窗</span></div>
+
 <main>
 <aside>
   <input id="name" placeholder="数据集名字，比如：日活">
